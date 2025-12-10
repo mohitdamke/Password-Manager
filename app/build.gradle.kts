@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 
 }
 
@@ -92,7 +93,5 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
 
     implementation("com.google.android.gms:play-services-auth:21.4.0")
-
-    implementation("androidx.core:core-splashscreen:1.2.0")
 
 }

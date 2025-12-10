@@ -2,13 +2,13 @@ package mohit.dev.passwordmanager.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import mohit.dev.passwordmanager.screen.AddPasswordScreen
 import mohit.dev.passwordmanager.screen.EditPasswordScreen
 import mohit.dev.passwordmanager.screen.HomeScreen
+import mohit.dev.passwordmanager.screen.PinLockScreen
+import mohit.dev.passwordmanager.screen.SplashScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
@@ -19,25 +19,39 @@ fun AppNavHost(navController: NavHostController) {
     ) {
 
         composable(Routes.Splash.route) {
-            _root_ide_package_.android.window.SplashScreen(navController)
+            SplashScreen(navController)
         }
 
         composable(Routes.Home.route) {
-            HomeScreen(navController)
+            HomeScreen(
+                onAddClick = { navController.navigate(Routes.AddPassword.route) },
+                onEditClick = { id ->
+                    navController.navigate(Routes.EditPassword.passId(id))
+                }
+            )
         }
 
+
         composable(Routes.AddPassword.route) {
-            AddPasswordScreen(navController)
+            AddPasswordScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Routes.Lock.route) {
+            PinLockScreen(onUnlock = {
+                navController.navigate(Routes.Home.route) {
+                    popUpTo(Routes.Lock.route) { inclusive = true }
+                }
+            })
         }
 
         composable(
-            route = Routes.EditPassword.route,
-            arguments = listOf(navArgument("passwordId") { type = NavType.IntType })
+            route = Routes.EditPassword.route
         ) { backStackEntry ->
-            val id = backStackEntry.arguments?.getInt("passwordId") ?: 0
-            EditPasswordScreen(navController, id)
+            val id = backStackEntry.arguments?.getString("passwordId")?.toInt()!!
+            EditPasswordScreen(navController = navController, passwordId = id)
         }
-//        navController.navigate(Screen.EditPassword.passId(passwordId))
 
     }
 }
